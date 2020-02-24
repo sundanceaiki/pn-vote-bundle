@@ -1,0 +1,20 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  VoteBundle\Controller\:
+    resource: '../../Controller/*'
+
+  VoteBundle\Repository\:
+    resource: '../../Repository/*'
+
+  VoteBundle\Form\VoteType:
+    tags:
+      - { name: form.type, alias: vote }
+    public: true
+
+  VoteBundle\EventSubscriber\VoteSubscriber:
+    tags:
+      - { name: doctrine.event_subscriber }

@@ -1,0 +1,52 @@
+<div>
+    <style>
+        .pnvotes{padding:10px}.pnvotes input{border:none;width:98%;padding-left:10px}.pnvotes .far{font-size:1.5em;color:#3b5998}.pnvotes span{position:absolute}.pnvotes .negative,.pnvotes .positive{width:5em;position:relative;float:left}.pnvotes .negative i,.pnvotes .positive i{cursor:pointer}.pnvote_loader{margin-left:10px}
+    </style>
+    <div class="pnvotes">
+        <div class="positive pnv">
+            {{ form_start(formPositive) }}
+            <i class="far fa-hand-point-up pnvote"
+               data-vote="positive" {% if voted %} style="cursor: auto; pointer-events: none;"{% endif %}></i>
+            <span>
+            {{ form_widget(formPositive.positive, { 'attr': { 'value': (votes ? votes.positive : 0) } }) }}
+        </span>
+            {{ form_end(formPositive) }}
+        </div>
+        <div class="negative pnv">
+            {{ form_start(formNegative) }}
+            <i class="far fa-hand-point-down pnvote"
+               data-vote="negative" {% if voted %} style="cursor: auto; pointer-events: none;"{% endif %}></i>
+            <span>
+        {{ form_widget(formNegative.negative, { 'attr': { 'value': (votes ? votes.negative : 0) } }) }}
+        </span>
+            {{ form_end(formNegative) }}
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+
+    <script>
+        $(function () {
+            $(document).one('click', 'i.pnvote', function (e) {
+                e.preventDefault();
+                $(this).next("span").html('<i class="far fas fa-spinner fa-spin pnvote_loader"></i>');
+                var form = $(this).closest('form');
+                $.post(
+                    form.attr('action'),
+                    form.serialize(),
+                    function (response) {
+                        if (typeof response == 'object') {
+                            console.log('Error', response);
+                        } else {
+                            $('.pnvotes').parent().html(response);
+                            $('i.pnvote').css({'cursor': 'auto', 'pointer-events': 'none'});
+                        }
+                    })
+                    .fail(function () {
+                        console.log('Error from the server!');
+                    })
+            });
+        });
+    </script>
+
+
+</div>
